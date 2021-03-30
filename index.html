@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .line {
+      width: 100%;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      border-bottom: 1px solid #aaa;
+      text-align: center;
+      height: 50px;
+      line-height: 50px;
+    }
+  </style>
+</head>
+<body>
+<button onclick="getHeapTop()">取出</button>
+  <div id="container">
+
+  </div>
+  <script>
+
+    let container = document.getElementById('container');
+
+
+    class heap {
+      // type: max | min;
+      constructor(data, type = 'min') {
+        this.data = [...data];
+        this.type = type;
+        this.initHeap();
+      }
+
+      initHeap() {
+        if (this.type === 'min') {
+          // debugger
+          let i = this.data.length - 1
+          while (i >= 0) {
+            let current = this.data[i];
+            let father = this.data[this.getFatherIndex(i)];
+            if (current < father) {
+              this.shift(this.getFatherIndex(i), i);
+              i = this.getRightIndex(i);
+            } else {
+              i--;
+            }
+          }
+        } else if (type === 'max') {
+
+        } else {
+          throw new Error('type 仅支持 min/max')
+        }
+
+        return;
+        if (this.type === 'min') {
+          debugger
+          for (let i = 0; i < this.data.length; i++) {
+            let leftIndex = this.getLeftIndex(i);
+            let rightIndex = this.getRightIndex(i);
+            let fatherIndex = i;
+            while (leftIndex <= this.data.length - 1) {
+              let current = this.data[fatherIndex];
+              let left = this.data[leftIndex];
+              let right = this.data[rightIndex];
+
+              if (this.data[rightIndex] !== undefined && this.data[rightIndex] !== void 0) {
+                if (left < current || right < current) {
+                  if (left <= right) {
+                    this.shift(fatherIndex, leftIndex);
+                    fatherIndex = leftIndex;
+                  } else {
+                    this.shift(fatherIndex, rightIndex);
+                    fatherIndex = rightIndex;
+                  }
+                  leftIndex = this.getLeftIndex(fatherIndex);
+                  rightIndex = this.getRightIndex(fatherIndex);
+                } else {
+                  leftIndex = this.data.length;
+                }
+              } else {
+                if (left < current) {
+                  this.shift(fatherIndex, leftIndex);
+                  fatherIndex = leftIndex;
+                  leftIndex = this.getLeftIndex(fatherIndex);
+                  rightIndex = this.getRightIndex(fatherIndex);
+                } else {
+                  leftIndex = this.data.length;
+                }
+              }
+            }
+          }
+        } else if (type === 'max') {
+          // todo
+        } else {
+          throw new Error('type 仅支持 min/max')
+        }
+      }
+
+      getData() {
+        return this.data;
+      }
+
+      getLeftIndex(i) {
+        return (i * 2 + 1);
+      }
+
+      getFatherIndex(i) {
+        return Math.floor((i - 1)/2);
+      }
+
+      getRightIndex(i) {
+        return (i * 2 + 2);
+      }
+
+      getTop() {
+        let item = this.data[0];
+        if (item === undefined) {
+          throw new Error('没有数据了');
+        }
+        this.data.shift();
+        this.shiftDown();
+        render(this.data);
+        return item;
+      }
+
+      shiftDown() {
+        let lastOne = this.data.pop();
+        this.data = [lastOne, ...this.data];
+
+        let fatherIndex = 0;
+        let leftIndex = this.getLeftIndex(fatherIndex);
+        let rightIndex = this.getRightIndex(fatherIndex);
+
+        while (leftIndex <= this.data.length - 1) {
+          let current = this.data[fatherIndex];
+          let left = this.data[leftIndex];
+          let right = this.data[rightIndex];
+
+          if (this.data[rightIndex] !== undefined && this.data[rightIndex] !== void 0) {
+            if (left < current || right < current) {
+              if (left <= right) {
+                this.shift(fatherIndex, leftIndex);
+                fatherIndex = leftIndex;
+              } else {
+                this.shift(fatherIndex, rightIndex);
+                fatherIndex = rightIndex;
+              }
+              leftIndex = this.getLeftIndex(fatherIndex);
+              rightIndex = this.getRightIndex(fatherIndex);
+            } else {
+              leftIndex = this.data.length;
+            }
+          } else {
+            if (left < current) {
+              this.shift(fatherIndex, leftIndex);
+              fatherIndex = leftIndex;
+              leftIndex = this.getLeftIndex(fatherIndex);
+              rightIndex = this.getRightIndex(fatherIndex);
+            } else {
+              leftIndex = this.data.length;
+            }
+          }
+        }
+      }
+
+      shift(father, son) {
+        [this.data[father], this.data[son]] = [this.data[son], this.data[father]];
+        render(this.data);
+      }
+    }
+    let a = [12,2,33,45,6,-7,89,6,48,-2,4,3];
+
+    render(a);
+
+    let b = new heap(a);
+
+    function getHeapTop() {
+      b.getTop();
+    }
+
+    function render(data) {
+      container.innerHTML='';
+      let dataCopy = [...data];
+      let length = data.length;
+
+      let line = 1;
+      while (length > 0) {
+        const lineDom = document.createElement('DIV');
+        lineDom.className = 'line';
+        let lineCount = Math.pow(2, (line - 1))
+        for (let i = 0; i < lineCount; i++) {
+          if (dataCopy[i] === undefined) {
+            break;
+          }
+          const element = document.createElement('DIV');
+          element.className = 'lineItem';
+          element.style.width = `${100/lineCount}%`
+          element.innerHTML = dataCopy[i];
+          lineDom.appendChild(element);
+        }
+        dataCopy.splice(0, lineCount);
+        length = length - lineCount;
+        line++;
+        container.appendChild(lineDom);
+      }
+    }
+
+  </script>
+</body>
+</html>
