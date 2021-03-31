@@ -54,50 +54,6 @@
         } else {
           throw new Error('type 仅支持 min/max')
         }
-
-        return;
-        if (this.type === 'min') {
-          debugger
-          for (let i = 0; i < this.data.length; i++) {
-            let leftIndex = this.getLeftIndex(i);
-            let rightIndex = this.getRightIndex(i);
-            let fatherIndex = i;
-            while (leftIndex <= this.data.length - 1) {
-              let current = this.data[fatherIndex];
-              let left = this.data[leftIndex];
-              let right = this.data[rightIndex];
-
-              if (this.data[rightIndex] !== undefined && this.data[rightIndex] !== void 0) {
-                if (left < current || right < current) {
-                  if (left <= right) {
-                    this.shift(fatherIndex, leftIndex);
-                    fatherIndex = leftIndex;
-                  } else {
-                    this.shift(fatherIndex, rightIndex);
-                    fatherIndex = rightIndex;
-                  }
-                  leftIndex = this.getLeftIndex(fatherIndex);
-                  rightIndex = this.getRightIndex(fatherIndex);
-                } else {
-                  leftIndex = this.data.length;
-                }
-              } else {
-                if (left < current) {
-                  this.shift(fatherIndex, leftIndex);
-                  fatherIndex = leftIndex;
-                  leftIndex = this.getLeftIndex(fatherIndex);
-                  rightIndex = this.getRightIndex(fatherIndex);
-                } else {
-                  leftIndex = this.data.length;
-                }
-              }
-            }
-          }
-        } else if (type === 'max') {
-          // todo
-        } else {
-          throw new Error('type 仅支持 min/max')
-        }
       }
 
       getData() {
