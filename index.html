@@ -117,20 +117,25 @@
       }
 
       getTop() {
-        let item = this.data[0];
+        let item = this.data.shift();
+
         if (item === undefined) {
           throw new Error('没有数据了');
         }
-        this.data.shift();
+        let lastOne = this.data.pop();
+        this.data = [lastOne, ...this.data];
         this.shiftDown();
         render(this.data);
         return item;
       }
 
-      shiftDown() {
-        let lastOne = this.data.pop();
-        this.data = [lastOne, ...this.data];
+      add(item) {
+        this.data = [item, ...this.data];
+        this.shiftDown();
+        render(this.data);
+      }
 
+      shiftDown() {
         let fatherIndex = 0;
         let leftIndex = this.getLeftIndex(fatherIndex);
         let rightIndex = this.getRightIndex(fatherIndex);
